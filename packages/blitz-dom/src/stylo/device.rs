@@ -70,7 +70,17 @@ pub(crate) fn make_device(
         ComputedValues::initial_values_with_font_override(Font::initial_values()),
         Box::new(BlitzFontMetricsProvider { font_ctx }),
         "Submit Query".into(),
+        document_random_hasher_key(),
         make_media_data(viewport, media_type),
+    )
+}
+
+/// A fresh key per document, so that CSS `random()` base values differ between documents.
+fn document_random_hasher_key() -> (u64, u64) {
+    use std::hash::{BuildHasher, RandomState};
+    (
+        RandomState::new().hash_one(0u8),
+        RandomState::new().hash_one(1u8),
     )
 }
 
